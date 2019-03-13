@@ -11,7 +11,8 @@ class Admin extends Admin_Controller
     }
 
     public function index(){
-        
+        $this->data['page_title'] = "Role";
+        $this->render_view_template('backend/dashboard',$this->data);
     }
 
     public function roles()

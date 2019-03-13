@@ -30,6 +30,10 @@
 	<link rel="stylesheet" href="<?= base_url()?>assets/backend/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 	<!--  sweet alert -->
 	<link rel="stylesheet" href="<?= base_url()?>assets/backend/css/sweetalert2.css">
+	<!-- Datatable checkbox -->
+	<link rel="stylesheet" href="<?= base_url()?>assets/backend/css/dataTables.checkboxes.css">
+	<!--  Toaster alert -->
+	<link rel="stylesheet" href="<?= base_url()?>assets/backend/plugins/toaster/jquery.toast.min.css">
 	<!-- Daterange picker -->
 	<link rel="stylesheet" href="<?= base_url()?>assets/backend/bower_components/bootstrap-daterangepicker/daterangepicker.css">
 	<!-- bootstrap wysihtml5 - text editor -->
@@ -79,6 +83,10 @@
 <script src="<?= base_url()?>assets/backend/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <!-- select2  -->
 <script src="<?= base_url()?>assets/backend/bower_components/select2/dist/js/select2.full.min.js"></script>
+<!-- toaster  -->
+<script src="<?= base_url()?>assets/backend/plugins/toaster/jquery.toast.min.js"></script>
+<!-- datatable checkbox  -->
+<script src="<?= base_url()?>assets/backend/js/dataTables.checkboxes.min.js"></script>
 <!-- Slimscroll -->
 <script src="<?= base_url()?>assets/backend/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->

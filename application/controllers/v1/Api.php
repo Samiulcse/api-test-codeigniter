@@ -55,10 +55,10 @@ class Api extends CI_Controller
             $result = $this->api_model->addNewUser($user_data);
 
             if ($result) {
-                echo json_encode(['id' => $result]);
+                echo json_encode(["message" => "Added user Sucessfully !","type"=>"success"]);
 
             } else {
-                echo json_encode(['error' => 'There is problem to add record']);
+                echo json_encode(["messege" => 'There is problem to add record',"type"=>"danger"]);
             }
         }
     }
@@ -73,11 +73,10 @@ class Api extends CI_Controller
             $result = $this->api_model->editUser($id, $data);
 
             if ($result) {
-
-                echo json_encode(['Message' => "Updated"]);
+                echo json_encode(["message" => "User Updated Sucessfully !","type"=>"success"]);
 
             } else {
-                echo json_encode(['error' => 'There is problem to add record']);
+                echo json_encode(["messege" => 'There is problem to update user',"type"=>"danger"]);
             }
 
         }

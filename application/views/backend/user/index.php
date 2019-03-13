@@ -23,9 +23,20 @@
 
 							<div class="row">
 								<div class="col-sm-12 table-responsive">
+								<form id="selectedItemDelete" method="post">
+
+								<p><b>Selected rows data</b></p>
+								<pre id="view-rows"></pre>
+								<p><b>Form data as submitted to the server</b></p>
+								<pre id="view-form"></pre>
+
+								<p><button id="deleteAllBtn" class="btn btn-danger disabled">View Selected</button><br /></p>
+
+								
 									<table id="mytable" class="table table-bordered table-striped">
 										<thead>
 											<tr>
+												<th></th>
 												<th>Sl</th>
 												<th>Name</th>
 												<th>Phone Number</th>
@@ -36,6 +47,7 @@
 										</thead>
 										<tfoot>
 											<tr>
+												<th></th>
 												<th>Sl</th>
 												<th>Name</th>
 												<th>Phone Number</th>
@@ -45,6 +57,7 @@
 											</tr>
 										</tfoot>
 									</table>
+									</form>
 								</div>
 							</div>
 
@@ -100,7 +113,7 @@
 					<div class="form-group">
 						<label for="phone" class="col-sm-2 control-label">Phone</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" name="phone" id="addphone" placeholder="Phone">
+							<input type="text" class="form-control phonebook_phone" maxlength="14" name="phone" id="addphone" placeholder="Phone">
 						</div>
 					</div>
 					<div class="form-group">
@@ -108,7 +121,7 @@
 						<div class="col-sm-10">
 							<select name="gender" id="addgender" class="form-control">
 								<option value="male">Male</option>
-								<option value="male">Female</option>
+								<option value="female">Female</option>
 							</select>
 						</div>
 					</div>
@@ -150,7 +163,7 @@
 					<div class="form-group">
 						<label for="phone" class="col-sm-2 control-label">Phone</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" name="phone" id="phone" placeholder="Phone">
+							<input type="text" class="form-control phonebook_phone" maxlength="14" name="phone" id="phone" placeholder="Phone">
 						</div>
 					</div>
 					<div class="form-group">
@@ -183,6 +196,8 @@
 
 	(function($){
 
+		$("#dashboardUser").addClass('active');
+
 		var mytable = $("#mytable").DataTable({
 			"processing": true,
 			responsive: true,
@@ -192,19 +207,34 @@
 				timeout: 30000,
 				dataSrc: ''
 			},
-			"columns": [{
-				"data": "sl"
-			}, {
-				"data": "name"
-			}, {
-				"data": "phone"
-			}, {
-				"data": "gender"
-			}, {
-				"data": "address"
-			}, {
-				"data": "action"
-			}]
+			columnDefs: [{
+					'targets': 0,
+					'checkboxes': {
+						'selectRow': true,
+						// 'selectCallback': function(nodes, selected){
+            //       console.log("Hello");
+            //    }
+					}
+				}],
+				select:'multi',
+				order: [
+					[1, 'asc']
+				],
+				"columns": [{
+					"data" : "id"
+				},{
+					"data": "sl"
+				}, {
+					"data": "name"
+				}, {
+					"data": "phone"
+				}, {
+					"data": "gender"
+				}, {
+					"data": "address"
+				}, {
+					"data": "action"
+				}]
 		});
 
 		// delete user
@@ -260,6 +290,7 @@
 					},
 					dataType: "json"
 				}).done(function (response) {
+					// console.log(response);
 					$('#id').val(response.id);
 					$('#name').val(response.name);
 					$('#phone').val(response.phone);
@@ -283,9 +314,12 @@
 			$.ajax({
 				type: "POST",
 				url: url,
-				data: $('form').serialize(),
+				data: $(this).serialize(),
 			}).done(function (response){
 				$('#editModal').modal('hide');
+
+				var data = JSON.parse(response);
+				toasterCall(data.type,data.message);
 				$('#mytable').DataTable().ajax.reload();
 			}).fail(function(){
 				alert('Fail');
@@ -299,40 +333,30 @@
 			$("#addModal").modal('show');
 		});
 
-		$("#addForm").submit(function (e) { 
+		$("#addForm").submit(function (e) {
 
 			var url = $("#addForm").attr('action');
-			console.log(url);
+			// console.log(url);
 			$.ajax({
 				type: "POST",
 				url: url,
-				data: $('form').serialize(),
-			}).done(function(response){
-				alert("ok");
-			}).fail(function(){
+				data: $(this).serialize(),
+			}).done(function (response) {
+				// console.log(response);
+				$('#mytable').DataTable().ajax.reload();
+				$("#addModal").modal('hide');
+				$("#addForm").trigger('reset');
+				var data = JSON.parse(response);
+				// console.log(data);
+				// alert(data.type);
+				toasterCall(data.type,data.message);
+
+			}).fail(function () {
 				alert("not ok");
 			});
 			e.preventDefault();
-			
+
 		});
-
-		// $(document).on('submit','#addForm',function(e){
-		// 	var url = $("#addForm").attr('action');
-		// 	console.log(url);
-		// 	$.ajax({
-		// 		type: "POST",
-		// 		url: url,
-		// 		data: form.serialize(),
-		// 	}).done(function(response){
-				
-		// 		e.preventDefault();
-		// 	}).fail(function(){
-		// 		e.preventDefault();
-		// 	});
-		// 	e.preventDefault();
-		// });
-
-
 
 		function SwalDelete(id) {
 
@@ -369,7 +393,29 @@
 
 		}
 
+		// slected item delete
+		$(".dt-body-center").click(function (e) { 
+			// alert("hello");
+			$("#deleteAllBtn").removeClass("disabled");
+			e.preventDefault();
+			
+		});
 
+		$("#selectedItemDelete").on('submit', function (e) {
+			var form = this;
+			var rowsel = mytable.column(0).checkboxes.selected();
+			$.each(rowsel, function (index, rowId) {
+				$(form).append(
+					$('<input>').attr('type', 'hidden').attr('name', 'id[]').val(rowId)
+				)
+			})
+			$("#view-rows").text(rowsel.join(","))
+			$("#view-form").text($(form).serialize())
+			$('input[name="id\[\]"]', form).remove()
+			e.preventDefault()
+		})
+
+		
 
 	})(jQuery);
 

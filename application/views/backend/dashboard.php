@@ -11,7 +11,13 @@
     </section>
 
 <section class="content">
-    <?= current_url()?>
+   
 </section>
 
 </div>
+
+<script>
+  $(document).ready(function () {
+    $("#dashboardMainMenu").addClass('active');
+  });
+</script>

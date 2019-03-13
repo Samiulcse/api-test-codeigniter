@@ -13,7 +13,7 @@
 		</div>
 		<!-- sidebar menu: : style can be found in sidebar.less -->
 		<ul class="sidebar-menu tree " data-widget="tree">
-			<li class="<?= current_url()== base_url()? 'active': ''?>">
+			<li id="dashboardMainMenu">
 				<a href="<?= base_url()?>">
 					<i class="fa fa-dashboard"></i> <span>Dashboard</span>
 				</a>
@@ -38,7 +38,14 @@
 				</ul>
 			</li> -->
 
-			<li class=" treeview">
+			<li id="dashboardUser">
+				<a href="<?= base_url('/api-test/user')?>">
+					<i class="fa fa-user"></i> <span>All User</span>
+				</a>>
+			</li>
+			
+
+			<!-- <li class=" treeview">
 				<a href="#">
 					<i class="fa fa-dashboard"></i> <span>Users</span>
 					<span class="pull-right-container">
@@ -54,7 +61,7 @@
 					</li>
 					
 				</ul>
-			</li>
+			</li> -->
 
 
 		</ul>
