@@ -40,7 +40,7 @@ class User extends Admin_Controller
             $i++;
         }
 
-        return json_encode($result);
+        return json_encode(["data"=>$result]);
     }
 
     public function edit()

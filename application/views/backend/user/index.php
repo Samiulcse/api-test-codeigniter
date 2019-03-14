@@ -36,7 +36,7 @@
 									<table id="mytable" class="table table-bordered table-striped">
 										<thead>
 											<tr>
-												<th></th>
+											<th><input name="select_all" value="1" type="checkbox"></th>
 												<th>Sl</th>
 												<th>Name</th>
 												<th>Phone Number</th>
@@ -197,30 +197,18 @@
 	(function($){
 
 		$("#dashboardUser").addClass('active');
+		var rows_selected = [];
 
-		var mytable = $("#mytable").DataTable({
+		var table = $("#mytable").DataTable({
 			"processing": true,
 			responsive: true,
 			"ajax": {
 				"url": "<?= base_url('api-test/user/getAllUser')?>",
 				type: "GET",
 				timeout: 30000,
-				dataSrc: ''
+				dataSrc: 'data'
 			},
-			columnDefs: [{
-					'targets': 0,
-					'checkboxes': {
-						'selectRow': true,
-						// 'selectCallback': function(nodes, selected){
-            //       console.log("Hello");
-            //    }
-					}
-				}],
-				select:'multi',
-				order: [
-					[1, 'asc']
-				],
-				"columns": [{
+			"columns": [{
 					"data" : "id"
 				},{
 					"data": "sl"
@@ -234,8 +222,121 @@
 					"data": "address"
 				}, {
 					"data": "action"
-				}]
+				}],
+			// columnDefs: [{
+			// 		'targets': 0,
+			// 		'checkboxes': {
+			// 			'selectRow': true,
+			// 			// 'selectCallback': function(nodes, selected){
+      //       //       console.log("Hello");
+      //       //    }
+			// 		}
+			// 	}],
+			'columnDefs': [{
+         'targets': 0,
+         'searchable': false,
+         'orderable': false,
+         'width': '1%',
+         'className': 'dt-body-center',
+         'render': function (data, type, full, meta){
+             return '<input type="checkbox">';
+         }
+      }],
+				select:'multi',
+				order: [
+					[1, 'asc']
+				],
+				'rowCallback': function(row, data, dataIndex){
+         // Get row ID
+         var rowId = data.id;
+					// console.log(rowId);
+         // If row ID is in the list of selected row IDs
+         if($.inArray(rowId, rows_selected) !== -1){
+            $(row).find('input[type="checkbox"]').prop('checked', true);
+            $(row).addClass('selected');
+         }
+      }
 		});
+
+		// Handle click on checkbox
+		$('#mytable tbody').on('click', 'input[type="checkbox"]', function(e){
+      var $row = $(this).closest('tr');
+
+      // Get row data
+      var data = table.row($row).data();
+
+      // Get row ID
+      var rowId = data.id;
+
+      // Determine whether row ID is in the list of selected row IDs
+      var index = $.inArray(rowId, rows_selected);
+
+      // If checkbox is checked and row ID is not in list of selected row IDs
+      if(this.checked && index === -1){
+         rows_selected.push(rowId);
+      // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
+      } else if (!this.checked && index !== -1){
+         rows_selected.splice(index, 1);
+      }
+
+      if(rows_selected.length > 0){
+         $row.addClass('selected');
+      } else {
+         $row.removeClass('selected');
+      }
+
+      // Update state of "Select all" control
+      updateDataTableSelectAllCtrl(table);
+
+      // Prevent click event from propagating to parent
+      e.stopPropagation();
+   });
+
+   // Handle click on table cells with checkboxes
+   $('#mytable').on('click', 'tbody td, thead th:first-child', function(e){
+      $(this).parent().find('input[type="checkbox"]').trigger('click');
+   });
+
+   // Handle click on "Select all" control
+   $('thead input[name="select_all"]', table.table().container()).on('click', function(e){
+      if(this.checked){
+         $('#mytable tbody input[type="checkbox"]:not(:checked)').trigger('click');
+      } else {
+         $('#mytable tbody input[type="checkbox"]:checked').trigger('click');
+      }
+
+      // Prevent click event from propagating to parent
+      e.stopPropagation();
+   });
+
+   // Handle table draw event
+   table.on('draw', function(){
+      // Update state of "Select all" control
+      updateDataTableSelectAllCtrl(table);
+   });
+
+   // Handle form submission event
+   $('#selectedItemDelete').on('submit', function(e){
+      var form = this;
+
+      // Iterate over all selected checkboxes
+      $.each(rows_selected, function(index, rowId){
+         // Create a hidden element
+         $(form).append(
+             $('<input>')
+                .attr('type', 'hidden')
+                .attr('name', 'id[]')
+                .val(rowId)
+         );
+      });
+			var data = $(this).serialize();
+
+			console.log(data);
+
+			e.preventDefault();
+   });
+
+
 
 		// delete user
 		$(document).on('click', '#delete_user', function(e){
@@ -394,31 +495,59 @@
 		}
 
 		// slected item delete
-		$(".dt-body-center").click(function (e) { 
-			// alert("hello");
-			$("#deleteAllBtn").removeClass("disabled");
-			e.preventDefault();
-			
-		});
-
-		$("#selectedItemDelete").on('submit', function (e) {
-			var form = this;
-			var rowsel = mytable.column(0).checkboxes.selected();
-			$.each(rowsel, function (index, rowId) {
-				$(form).append(
-					$('<input>').attr('type', 'hidden').attr('name', 'id[]').val(rowId)
-				)
-			})
-			$("#view-rows").text(rowsel.join(","))
-			$("#view-form").text($(form).serialize())
-			$('input[name="id\[\]"]', form).remove()
-			e.preventDefault()
-		})
+		
+		// $("#selectedItemDelete").on('submit', function (e) {
+		// 	var form = this;
+		// 	var rowsel = mytable.column(0).checkboxes.selected();
+		// 	$.each(rowsel, function (index, rowId) {
+		// 		$(form).append(
+		// 			$('<input>').attr('type', 'hidden').attr('name', 'id[]').val(rowId)
+		// 		)
+		// 	})
+		// 	$("#view-rows").text(rowsel.join(","))
+		// 	$("#view-form").text($(form).serialize())
+		// 	$('input[name="id\[\]"]', form).remove()
+		// 	e.preventDefault()
+		// })
 
 		
 
+	// $('#mytable input[type="checkbox"]').click(function() {
+  //   console.log('suggested-in-comment', 'click');
+	// });
+
 	})(jQuery);
 
+//
+// Updates "Select all" control in a data table
+//
+function updateDataTableSelectAllCtrl(table){
+   var $table             = table.table().node();
+   var $chkbox_all        = $('tbody input[type="checkbox"]', $table);
+   var $chkbox_checked    = $('tbody input[type="checkbox"]:checked', $table);
+   var chkbox_select_all  = $('thead input[name="select_all"]', $table).get(0);
 
+   // If none of the checkboxes are checked
+   if($chkbox_checked.length === 0){
+      chkbox_select_all.checked = false;
+      if('indeterminate' in chkbox_select_all){
+         chkbox_select_all.indeterminate = false;
+      }
+
+   // If all of the checkboxes are checked
+   } else if ($chkbox_checked.length === $chkbox_all.length){
+      chkbox_select_all.checked = true;
+      if('indeterminate' in chkbox_select_all){
+         chkbox_select_all.indeterminate = false;
+      }
+
+   // If some of the checkboxes are checked
+   } else {
+      chkbox_select_all.checked = true;
+      if('indeterminate' in chkbox_select_all){
+         chkbox_select_all.indeterminate = true;
+      }
+   }
+}
 	
 </script>
