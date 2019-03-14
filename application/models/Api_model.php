@@ -50,4 +50,13 @@ class Api_model extends CI_Model
 
         return $result;
     }
+
+    public function deleteAllSelected($ids){
+        if($ids){
+            $this->db->where_in('id', $ids);
+            $result = $this->db->delete('users');
+            return $result;
+        }
+    }
+    
 }

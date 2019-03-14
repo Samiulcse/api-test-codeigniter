@@ -23,14 +23,9 @@
 
 							<div class="row">
 								<div class="col-sm-12 table-responsive">
-								<form id="selectedItemDelete" method="post">
+								<form id="selectedItemDelete" method="post" action="<?= base_url('api-test/user/deleteAllSelected')?>">
 
-								<p><b>Selected rows data</b></p>
-								<pre id="view-rows"></pre>
-								<p><b>Form data as submitted to the server</b></p>
-								<pre id="view-form"></pre>
-
-								<p><button id="deleteAllBtn" class="btn btn-danger disabled">View Selected</button><br /></p>
+								<p><button id="deleteAllBtn" style="display:none" class="btn btn-danger btn-sm">Delete Selected</button><br /></p>
 
 								
 									<table id="mytable" class="table table-bordered table-striped">
@@ -223,15 +218,6 @@
 				}, {
 					"data": "action"
 				}],
-			// columnDefs: [{
-			// 		'targets': 0,
-			// 		'checkboxes': {
-			// 			'selectRow': true,
-			// 			// 'selectCallback': function(nodes, selected){
-      //       //       console.log("Hello");
-      //       //    }
-			// 		}
-			// 	}],
 			'columnDefs': [{
          'targets': 0,
          'searchable': false,
@@ -280,9 +266,9 @@
       }
 
       if(rows_selected.length > 0){
-         $row.addClass('selected');
+         $("#deleteAllBtn").show();
       } else {
-         $row.removeClass('selected');
+				$("#deleteAllBtn").hide();
       }
 
       // Update state of "Select all" control
@@ -315,12 +301,11 @@
       updateDataTableSelectAllCtrl(table);
    });
 
-   // Handle form submission event
+  //  Handle form submission event
    $('#selectedItemDelete').on('submit', function(e){
       var form = this;
-
-      // Iterate over all selected checkboxes
-      $.each(rows_selected, function(index, rowId){
+			var url = $("#selectedItemDelete").attr('action');
+			$.each(rows_selected, function(index, rowId){
          // Create a hidden element
          $(form).append(
              $('<input>')
@@ -329,20 +314,18 @@
                 .val(rowId)
          );
       });
-			var data = $(this).serialize();
+			var id = $(form).serialize();
+			SwalDelete(id,url);
 
-			console.log(data);
-
+			// $("#view-form").text($(form).serialize());
 			e.preventDefault();
    });
-
-
-
+	 
 		// delete user
 		$(document).on('click', '#delete_user', function(e){
-			
-			var id = $(this).data('id');
-			SwalDelete(id);
+			var id = 'id='+ $(this).data('id');
+			var url = "<?= base_url('api-test/user/delete')?>";
+			SwalDelete(id,url);
 			e.preventDefault();
 		});
 
@@ -459,7 +442,7 @@
 
 		});
 
-		function SwalDelete(id) {
+		function SwalDelete(id,posturl) {
 
 			Swal.fire({
 				title: 'Are you sure?',
@@ -475,16 +458,18 @@
 					return new Promise(function (resolve) {
 
 						$.ajax({
-								url: '<?= base_url('api-test/user/delete')?>',
+								url: posturl,
 								type: 'POST',
-								data: 'id=' + id,
+								data: id,
 								dataType: 'json'
 							})
 							.done(function (response) {
 								Swal.fire('Deleted!', response.message, response.status);
 								$('#mytable').DataTable().ajax.reload();
+								$("#deleteAllBtn").hide();
 							})
 							.fail(function () {
+								// console.log(posturl);
 								Swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
 							});
 					});
@@ -494,27 +479,6 @@
 
 		}
 
-		// slected item delete
-		
-		// $("#selectedItemDelete").on('submit', function (e) {
-		// 	var form = this;
-		// 	var rowsel = mytable.column(0).checkboxes.selected();
-		// 	$.each(rowsel, function (index, rowId) {
-		// 		$(form).append(
-		// 			$('<input>').attr('type', 'hidden').attr('name', 'id[]').val(rowId)
-		// 		)
-		// 	})
-		// 	$("#view-rows").text(rowsel.join(","))
-		// 	$("#view-form").text($(form).serialize())
-		// 	$('input[name="id\[\]"]', form).remove()
-		// 	e.preventDefault()
-		// })
-
-		
-
-	// $('#mytable input[type="checkbox"]').click(function() {
-  //   console.log('suggested-in-comment', 'click');
-	// });
 
 	})(jQuery);
 

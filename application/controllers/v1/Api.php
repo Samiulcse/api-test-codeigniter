@@ -99,5 +99,19 @@ class Api extends CI_Controller
             }
         }
     }
+    
+    public function deleteAllSelected()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            $data = $this->input->post();
+            $ids = $data['id'];
+            $result = $this->api_model->deleteAllSelected($ids);
+            if ($result) {
+                echo json_encode(['Message' => "Deleted","status"=>"success"]);
+            } else {
+                echo json_encode(['error' => 'There is problem to add record']);
+            }
+        }
+    }
 
 }

@@ -81,4 +81,13 @@ class User extends Admin_Controller
         echo $response;
     }
 
+    // delete all selected user
+    public function deleteAllSelected(){
+        $data =$data = $this->input->post();
+        $url = 'http://localhost/data-api/v1/api/deleteAllSelected';
+        $method = $_SERVER['REQUEST_METHOD'];
+        $response = callAPI($method,$url ,http_build_query($data));
+        echo $response;
+    }
+
 }
