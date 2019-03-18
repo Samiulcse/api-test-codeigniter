@@ -20,14 +20,12 @@
 					<!-- /.box-header -->
 					<div class="box-body">
 						<div id="example1_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-
 							<div class="row">
 								<div class="col-sm-12 table-responsive">
 								<form id="selectedItemDelete" method="post" action="<?= base_url('api-test/user/deleteAllSelected')?>">
-
-								<p><button id="deleteAllBtn" style="display:none" class="btn btn-danger btn-sm">Delete Selected</button><br /></p>
-
-								
+					
+								<!-- <p><button type="submit" id="deleteAllBtn" style="display : none;" class="btn btn-danger btn-sm">Delete Selected</button><br /></p> -->
+							
 									<table id="mytable" class="table table-bordered table-striped">
 										<thead>
 											<tr>
@@ -196,6 +194,18 @@
 
 		var table = $("#mytable").DataTable({
 			"processing": true,
+			"dom": "<'row' <'col-sm-2'l> <'col-sm-7'B> <'col-sm-2'f> >rtip",
+			"buttons": [
+					 'csv', 'excel', 'pdf', 'print',
+					 {
+                text: 'Delete All Selected',
+								attr:  {
+										id: 'deleteAllBtn',
+										class: "btn-red",
+										type : "submit"
+								},
+            },
+			],
 			responsive: true,
 			"ajax": {
 				"url": "<?= base_url('api-test/user/getAllUser')?>",
@@ -244,6 +254,8 @@
       }
 		});
 
+		$("#deleteAllBtn").hide();
+
 		// Handle click on checkbox
 		$('#mytable tbody').on('click', 'input[type="checkbox"]', function(e){
       var $row = $(this).closest('tr');
@@ -264,7 +276,7 @@
       } else if (!this.checked && index !== -1){
          rows_selected.splice(index, 1);
       }
-
+			
       if(rows_selected.length > 0){
          $("#deleteAllBtn").show();
       } else {
@@ -301,9 +313,16 @@
       updateDataTableSelectAllCtrl(table);
    });
 
+	 $( "#deleteAllBtn" ).click(function() {
+			$( "#selectedItemDelete" ).submit();
+		});
+
   //  Handle form submission event
    $('#selectedItemDelete').on('submit', function(e){
       var form = this;
+			// console.log(rows_selected);
+			$(form).find('input[type="hidden"]').remove();
+
 			var url = $("#selectedItemDelete").attr('action');
 			$.each(rows_selected, function(index, rowId){
          // Create a hidden element
@@ -315,6 +334,7 @@
          );
       });
 			var id = $(form).serialize();
+			// console.log(id);
 			SwalDelete(id,url);
 
 			// $("#view-form").text($(form).serialize());
@@ -515,3 +535,11 @@ function updateDataTableSelectAllCtrl(table){
 }
 	
 </script>
+
+<style>
+.btn-red{
+	background-color:red;
+	color: #fff;
+}
+
+</style>
