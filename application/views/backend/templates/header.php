@@ -30,6 +30,8 @@
 	<link rel="stylesheet" href="<?= base_url()?>assets/backend/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 	<!--  sweet alert -->
 	<link rel="stylesheet" href="<?= base_url()?>assets/backend/css/sweetalert2.css">
+	<!-- dropzone css -->
+	<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.css" rel="stylesheet" type="text/css"> -->
 	<!-- Datatable checkbox -->
 	<link rel="stylesheet" href="<?= base_url()?>assets/backend/css/dataTables.checkboxes.css">
 	<!--  Toaster alert -->
@@ -78,6 +80,8 @@
 <script src="<?= base_url()?>assets/backend/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- Bootstrap WYSIHTML5 -->
 <script src="<?= base_url()?>assets/backend/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<!-- dropzone js -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.js"></script> -->
 <!-- DataTables -->
 <script src="<?= base_url()?>assets/backend/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?= base_url()?>assets/backend/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>

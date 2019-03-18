@@ -41,7 +41,13 @@
 			<li id="dashboardUser">
 				<a href="<?= base_url('/api-test/user')?>">
 					<i class="fa fa-user"></i> <span>All User</span>
-				</a>>
+				</a>
+			</li>
+
+			<li id="dashboardGallery">
+				<a href="<?= base_url('/gallery')?>">
+					<i class="fa fa-file-image-o"></i> <span>Gallary</span>
+				</a>
 			</li>
 			
 
