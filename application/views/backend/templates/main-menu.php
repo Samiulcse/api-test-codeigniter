@@ -49,6 +49,12 @@
 					<i class="fa fa-file-image-o"></i> <span>Gallary</span>
 				</a>
 			</li>
+
+			<li id="dashboardDependentSelect">
+				<a href="<?= base_url('/dependentdropdown')?>">
+					<i class="fa fa-bandcamp"></i> <span>Dependent Dropdown</span>
+				</a>
+			</li>
 			
 
 			<!-- <li class=" treeview">
