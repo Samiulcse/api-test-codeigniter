@@ -55,6 +55,12 @@
 					<i class="fa fa-bandcamp"></i> <span>Dependent Dropdown</span>
 				</a>
 			</li>
+
+			<li id="dashboardExcelImport">
+				<a href="<?= base_url('/excelimport')?>">
+					<i class="fa fa-file-excel-o"></i> <span>Excel Import</span>
+				</a>
+			</li>
 			
 
 			<!-- <li class=" treeview">
