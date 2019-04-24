@@ -20,9 +20,4 @@ class Admin_Controller extends MY_Controller
         $this->load->view('backend/templates/footer', $data);
     }
 
-
-    public function FunctionName(Type $var = null)
-    {
-        # code...
-    }
 }
