@@ -61,6 +61,12 @@
 					<i class="fa fa-file-excel-o"></i> <span>Excel Import</span>
 				</a>
 			</li>
+
+			<li id="dashboardExcelImportInstitute">
+				<a href="<?= base_url('/excelimport/institute')?>">
+					<i class="fa fa-file-excel-o"></i> <span>Excel Import All Institute</span>
+				</a>
+			</li>
 			
 
 			<!-- <li class=" treeview">

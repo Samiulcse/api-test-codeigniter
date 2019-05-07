@@ -13,6 +13,11 @@ class Excel_model extends CI_Model{
 		$this->db->insert_batch('excel_users', $data);
     }
     
+    public function insertInstituteData($data)
+	{
+		$this->db->insert_batch('institute_information', $data);
+    }
+    
     public function delete($id)
     {
         $this->db->where('id', $id);

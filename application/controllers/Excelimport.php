@@ -18,6 +18,82 @@ class Excelimport extends Admin_Controller
         $this->render_view_template('backend/excel/index', $this->data);
     }
 
+    public function institute()
+    {
+        $this->data['page_title'] = "Excel Import";
+        $this->render_view_template('backend/excel/institute', $this->data);
+    }
+
+    public function importInstituteInfo()
+    {
+        if (isset($_FILES["file"]["name"])) {
+            $path = $_FILES["file"]["tmp_name"];
+            $object = PHPExcel_IOFactory::load($path);
+            foreach ($object->getWorksheetIterator() as $worksheet) {
+                $highestRow = $worksheet->getHighestRow();
+                $highestColumn = $worksheet->getHighestColumn();
+                for ($row = 2; $row <= $highestRow; $row++) {
+
+                    $institute_name = $worksheet->getCellByColumnAndRow(0, $row)->getValue();
+                    $eiin = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                    $institute_type = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+                    $division_id = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                    $division = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+                    $district_id = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
+                    $district = $worksheet->getCellByColumnAndRow(6, $row)->getValue();
+                    $thana_id = $worksheet->getCellByColumnAndRow(7, $row)->getValue();
+                    $thana = $worksheet->getCellByColumnAndRow(8, $row)->getValue();
+                    $union_id = $worksheet->getCellByColumnAndRow(9, $row)->getValue();
+                    $union_name = $worksheet->getCellByColumnAndRow(10, $row)->getValue();
+                    $mauza_id = $worksheet->getCellByColumnAndRow(11, $row)->getValue();
+                    $mauza_name = $worksheet->getCellByColumnAndRow(12, $row)->getValue();
+                    $area_status = $worksheet->getCellByColumnAndRow(13, $row)->getValue();
+                    $geogrpycal_status = $worksheet->getCellByColumnAndRow(14, $row)->getValue();
+                    $address = $worksheet->getCellByColumnAndRow(15, $row)->getValue();
+                    $post = $worksheet->getCellByColumnAndRow(16, $row)->getValue();
+                    $management_type = $worksheet->getCellByColumnAndRow(17, $row)->getValue();
+                    $mobile = $worksheet->getCellByColumnAndRow(18, $row)->getValue();
+                    $student_type = $worksheet->getCellByColumnAndRow(19, $row)->getValue();
+                    $education_level = $worksheet->getCellByColumnAndRow(20, $row)->getValue();
+                    $affiliation = $worksheet->getCellByColumnAndRow(21, $row)->getValue();
+                    $mpo_status = $worksheet->getCellByColumnAndRow(22, $row)->getValue();
+
+                    $data[] = array(
+                        'institute_name' => $institute_name,
+                        'eiin' => $eiin,
+                        'institute_type' => $institute_type,
+                        'division_id' => $division_id,
+                        'division' => $division,
+                        'district_id' => $district_id,
+                        'district' => $district,
+                        'thana_id' => $thana_id,
+                        'thana' => $thana,
+                        'union_id' => $union_id,
+                        'union_name' => $union_name,
+                        'mauza_id' => $mauza_id,
+                        'mauza_name' => $mauza_name,
+                        'area_status' => $area_status,
+                        'geogrpycal_status' => $geogrpycal_status,
+                        'address' => $address,
+                        'post' => $post,
+                        'management_type' => $management_type,
+                        'mobile' => $mobile,
+                        'student_type' => $student_type,
+                        'education_level' => $education_level,
+                        'affiliation' => $affiliation,
+                        'mpo_status' => $mpo_status
+                    );
+
+                }
+            }
+
+            $this->excel_model->insertInstituteData($data);
+
+            echo 'Data Imported successfully';
+        }
+    }
+
+
     public function import()
     {
         if (isset($_FILES["file"]["name"])) {
