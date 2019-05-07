@@ -15,7 +15,7 @@ class Excel_model extends CI_Model{
     
     public function insertInstituteData($data)
 	{
-		$this->db->insert_batch('institute_information', $data);
+		$this->db->insert_batch('institute_information_splitbatch', $data);
     }
     
     public function delete($id)

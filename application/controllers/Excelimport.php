@@ -29,11 +29,12 @@ class Excelimport extends Admin_Controller
         if (isset($_FILES["file"]["name"])) {
             $path = $_FILES["file"]["tmp_name"];
             $object = PHPExcel_IOFactory::load($path);
+            $i = 1;
             foreach ($object->getWorksheetIterator() as $worksheet) {
                 $highestRow = $worksheet->getHighestRow();
                 $highestColumn = $worksheet->getHighestColumn();
                 for ($row = 2; $row <= $highestRow; $row++) {
-
+                    $i++;
                     $institute_name = $worksheet->getCellByColumnAndRow(0, $row)->getValue();
                     $eiin = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
                     $institute_type = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
@@ -84,6 +85,11 @@ class Excelimport extends Admin_Controller
                         'mpo_status' => $mpo_status
                     );
 
+                    if ($i == 500) {
+                        $this->excel_model->insertInstituteData($data);
+                        $i=0;
+                        $data =[];
+                    }
                 }
             }
 
@@ -175,7 +181,4 @@ class Excelimport extends Admin_Controller
             echo json_encode(['error' => 'There is problem to add record']);
         }
     }
-
-
-
 }
